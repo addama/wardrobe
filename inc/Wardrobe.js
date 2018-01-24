@@ -1,26 +1,54 @@
 var Wardrobe = {
-	jsonLoc: '../json/',
-	
 	getTime: function(asDate) {
 		if (!asDate) asDate = false;
 		return (asDate)?new Date().toJSON():Date.now();
 	},
-	
-	pull: function() {
-		// Checks localStorage to see if the data is already there and not expired
-		// Pulls the data otherwise
 		
-	},
-	
 	makeItemID: function(object) {
 		
 	},
 	
 	json: {
+		pull: function() {
+			// Checks localStorage to see if the data is already there and not expired
+			// Pulls the data otherwise
+			var json = Wardrobe.json.newFile();
+			var storage = false;
+			try {
+				storage = Actual.storage.get(Data.localStorageName);
+			} catch(error) {}
+			if (!Data.json) {
+				if (storage) {
+					json = JSON.parse(storage);
+					Data.json = json;
+					//Actual.storage.put(Data.localStorageName, json);
+				} else {
+					Actual.file.load(Data.jsonLoc + Data.jsonFile, function(result) {
+						try {
+							json = JSON.parse(result);
+						} catch(error) {
+							console.error(Data.errorNotFound);
+							Actual.file.save(Data.jsonLoc + Data.jsonFile, JSON.stringify(json, null, '\t'), function(result) {
+								console.log(result);
+							})
+						}
+						Data.json = json;
+						Actual.storage.put(Data.localStorageName, json);
+					});
+				}
+			}
+		},
+		
+		save: function() {
+			Actual.file.save(Data.jsonLoc + Data.jsonFile, JSON.stringify(Data.json, null, '\t'), function(result) {
+				console.log(result);
+			});
+		},
+		
 		newFile: function(username) {
 			return {
 				created: Wardrobe.getTime(),
-				user: username,
+				user: username || '',
 				items: {
 					top: [],
 					bottom: [],
@@ -101,16 +129,17 @@ var Wardrobe = {
 				
 			}
 			
-			var name = 'wardrobe_login';
 			var cookie = makeCookie(username);
+			Actual.cookie.put(Data.cookieName, JSON.stringify(cookie));
 		},
 		
 		logout: function() {
 			// Deletes the cookie
+			Actual.cookie.remove(Data.cookieName);
 		},
 		
 		isLoggedIn: function() {
-			return Actual.cookie.get('wardrobe_login');
+			return Actual.cookie.get(Data.cookieName);
 			
 		},
 	},
@@ -143,6 +172,7 @@ var Wardrobe = {
 				// Bind inputs
 			},
 		},
+		
 		outfit: {
 			before: function(params) {
 				// Check login status
@@ -156,6 +186,7 @@ var Wardrobe = {
 				// Bind inputs
 			},
 		},
+		
 		home: {
 			before: function(params) {
 				
@@ -169,6 +200,7 @@ var Wardrobe = {
 				
 			},
 		},
+		
 		item: {
 			before: function(params) {
 				

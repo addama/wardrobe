@@ -1,3 +1,5 @@
+Wardrobe.json.pull();
+
 Router.add({
 	path: '#/',
 	before: function() { Wardrobe.pages.login.before(this.params); },

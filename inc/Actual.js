@@ -1,7 +1,7 @@
 var Actual = {
 	cookieExpire: 14,
 	routes: {},
-	phpFile: './Actual.php',	// The location of the main actual.php file
+	phpFile: './inc/Actual.php',	// The location of the main actual.php file
 	
 	log: function log() {
 		// A slightly more verbose console.log
@@ -74,7 +74,7 @@ var Actual = {
 			});
 		},
 		
-		save: function fileSave(name, content) {
+		save: function fileSave(name, content, handler) {
 			// Save content to the file
 			// If no contents are given, the file is wiped out
 			// Be careful!
@@ -84,6 +84,7 @@ var Actual = {
 				d: content || ''
 			}, 'GET', function(result) {
 				if (result) {
+					if (handler) handler(result);
 					return true;
 				} else {
 					Actual.log(name + ' could not be saved');
@@ -107,7 +108,7 @@ var Actual = {
 		
 		put: function storagePut(key, value) {
 			// Adds a key/value pair to localStorage
-			if (typeof value !== 'string') data = JSON.stringify(data);
+			if (typeof value !== 'string') value = JSON.stringify(value);
 			try {
 				localStorage.setItem(key, value);
 				return true
