@@ -1,0 +1,20 @@
+svg {
+	margin-right: 1em !important;
+}
+
+.bordered {
+	border: 1px solid #222;
+	border-radius: 5px;
+}
+
+.dropshadow {
+	box-shadow: 0 8px 30px #ededed;
+}
+
+label {
+	text-align: right;
+}
+
+.fullheight {
+	height: 90vh;
+}

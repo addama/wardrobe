@@ -4,9 +4,25 @@ var Data = {
 	jsonFile: 'wardrobe.json',
 	cookieName: 'wardrobe_login',
 	localStorageName: 'wardrobe_json',
+	waitTime: 100,
 	
-	// Errors
-	errorNotFound: 'JSON file not found!',
+	// Errors and messages
+	messages: {
+		loginIncomplete: 'Both username and password are required!',
+		loginIncorrect: 'Login or password incorrect!',
+		noPromises: 'This browser doesn\'t support Promises',
+		loginCorrect: 'Logged in successfully!',
+		jsonWriteFail: 'Failed to write new wardrobe.json',
+		needNewJSON: 'No wardrobe file present, creating one...',
+		alreadyLoggedIn: 'You are already logged in',
+		loggedOut: 'Logged out!',
+	},
+	icons: {
+		good: '<i class="fas fa-check-square"></i>',
+		bad: '<i class="fas fa-exclamation-triangle"></i>',
+		info: '<i class="fas fa-info-circle"></i>',
+		login: '<i class="fas fa-sign-in-alt"></i>',
+	},
 	
 	// Time
 	minute: 1 * 60 * 1000,		// 1 minute
@@ -203,6 +219,11 @@ var Data = {
 	labelID: 'label_',
 	buttonID: 'button_',
 	colorID: 'color_',
+	notifications: {
+		position: 'bottom-right',
+		timeout: 2000,
+	},
+	
 	
 	// Database
 	user: false,

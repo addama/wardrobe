@@ -3,40 +3,36 @@ var Wardrobe = {
 		if (!asDate) asDate = false;
 		return (asDate)?new Date().toJSON():Date.now();
 	},
-		
-	makeItemID: function(object) {
-		
+	
+	draw: function draw(template) {
+		// Renders the large page-based templates to the page
+		m.render(document.body, template);
+		m.redraw();
 	},
 	
 	json: {
 		pull: function() {
 			// Checks localStorage to see if the data is already there and not expired
 			// Pulls the data otherwise
-			var json = Wardrobe.json.newFile();
-			var storage = false;
-			try {
-				storage = Actual.storage.get(Data.localStorageName);
-			} catch(error) {}
-			if (!Data.json) {
-				if (storage) {
-					json = JSON.parse(storage);
-					Data.json = json;
-					//Actual.storage.put(Data.localStorageName, json);
-				} else {
-					Actual.file.load(Data.jsonLoc + Data.jsonFile, function(result) {
-						try {
-							json = JSON.parse(result);
-						} catch(error) {
-							console.error(Data.errorNotFound);
-							Actual.file.save(Data.jsonLoc + Data.jsonFile, JSON.stringify(json, null, '\t'), function(result) {
-								console.log(result);
-							})
+			if (Actual.util.fromConsole()) return Actual.util.wait(1000000);
+			return Actual.file.load(Data.jsonLoc + Data.jsonFile).then(function(result) {
+				try {
+					Data.json = JSON.parse(result);
+					return Actual.util.wait(Data.waitTime);
+				} catch (error) {
+					// There's no file to pull or an error
+					console.error(Data.messages.needNewJSON);
+					var json = Wardrobe.json.newFile();
+					return Actual.file.save(Data.jsonLoc + Data.jsonFile, JSON.stringify(json)).then(function(result) {
+						if (result) {
+							Data.json = json;
+						} else {
+							console.error(Data.messages.jsonWriteFail);
 						}
-						Data.json = json;
-						Actual.storage.put(Data.localStorageName, json);
+						return Actual.util.wait(Data.waitTime);
 					});
 				}
-			}
+			});
 		},
 		
 		save: function() {
@@ -48,7 +44,7 @@ var Wardrobe = {
 		newFile: function(username) {
 			return {
 				created: Wardrobe.getTime(),
-				user: username || '',
+				//user: username || '',
 				items: {
 					top: [],
 					bottom: [],
@@ -115,31 +111,53 @@ var Wardrobe = {
 	},
 	
 	user: {
-		login: function(username, password) {
-			// Validates the username/password
-			// Creates the cookie
-			function makeCookie(username) {
-				return {
-					username: username,
-					date: Wardrobe.getTime()
-				}
-			}
-			
+		checkLogin: function() {
 			function validate(username, password) {
-				
+				return Actual.util.ajax('./inc/validate.php', {u:username,p:password}, 'POST').then(function(result) {
+					return (result.toString() === '0') ? true : false;
+				})
 			}
-			
-			var cookie = makeCookie(username);
-			Actual.cookie.put(Data.cookieName, JSON.stringify(cookie));
+						
+			var data = Actual.util.getFormData(Data.containerID + 'login');
+			if (data) {
+				var username = data['username'].value;
+				var password = data['password'].value;
+				if (!username || !password) {
+					Wardrobe.notify.bad(Data.messages.loginIncomplete);
+					return false;
+				}
+				validate(username, password).then(function(result) {
+					if (result) {
+						Wardrobe.json.pull().then(function(result) {
+							Wardrobe.notify.good(Data.messages.loginCorrect);
+							Router.navigate('#/home');
+						});
+					} else {
+						Wardrobe.notify.bad(Data.messages.loginIncorrect);	
+					}
+				})
+			}
 		},
-		
+				
 		logout: function() {
 			// Deletes the cookie
-			Actual.cookie.remove(Data.cookieName);
+			Actual.storage.remove(Data.cookieName);
+			Actual.storage.remove(Data.localStorageName);
+			Data.json = false;
+			Wardrobe.notify.info(Data.messages.loggedOut);
 		},
 		
 		isLoggedIn: function() {
-			return Actual.cookie.get(Data.cookieName);
+			// Check for cookie
+			// If cookie exists, check expiration
+			// If cookie is beyond expiration, delete it
+			if (Data.json) return true;
+			return false;
+		},
+	},
+	
+	item: {
+		makeItemID: function(object) {
 			
 		},
 	},
@@ -158,59 +176,124 @@ var Wardrobe = {
 		},
 	},
 	
+	notify: {
+		// Creates a UIKit notification in one of 3 flavors: good, bad, and info
+		// raw() is only used by these 3 as the base function, not used externally
+		// Configuration in Data.notifications
+		raw: function notifyRaw(text, type, position, timeout) {
+			UIkit.notification({
+				message: text,
+				status: type || 'primary',
+				pos: position || Data.notifications.position,
+				timeout: timeout || Data.notifications.timeout
+			});
+		},
+		
+		good: function notifyGood(text) {
+			this.raw(Data.icons.good + text, 'success');
+		},
+		
+		bad: function notifyBad(text) {
+			this.raw(Data.icons.bad + text, 'danger');
+		},
+		
+		info: function notifyInfo(text) {
+			this.raw(Data.icons.info + text, 'primary');
+		},
+	},
+	
 	pages: {
 		login: {
-			before: function(params) {
+			before: function() {
 				// Check login status
+				if (Wardrobe.user.isLoggedIn()) {
+					Wardrobe.notify.info(Data.messages.alreadyLoggedIn);
+					Router.navigate('#/home');
+				}
+				this.task.done();
 			},
 			
-			view: function(params) {
+			view: function() {
 				// Display template
+				Wardrobe.draw(Templates.pages.login());
+				this.task.done();
 			},
 			
-			after: function(params) {
+			after: function() {
 				// Bind inputs
 			},
 		},
 		
 		outfit: {
-			before: function(params) {
-				// Check login status
+			before: function() {
+				if (!Wardrobe.user.isLoggedIn()) {
+					Router.navigate('#/login');
+				} else {
+					var context = this;
+					Wardrobe.json.pull().then(function(result) {
+						context.task.done();
+					});
+				}
 			},
 			
-			view: function(params) {
+			view: function() {
 				// Display template
+				console.log('outfit', this.params);
+				if (this.params.id) {
+					Wardrobe.draw(Templates.pages.outfitView());
+				} else {
+					Wardrobe.draw(Templates.pages.outfitAdd());
+				}
 			},
 			
-			after: function(params) {
+			after: function() {
 				// Bind inputs
 			},
 		},
 		
 		home: {
-			before: function(params) {
-				
+			before: function() {
+				if (!Wardrobe.user.isLoggedIn()) {
+					Router.navigate('#/login');
+				} else {
+					var context = this;
+					Wardrobe.json.pull().then(function(result) {
+						context.task.done();
+					});
+				}
 			},
 			
-			view: function(params) {
-				
+			view: function() {
+				Wardrobe.draw(Templates.pages.home());
 			},
 			
-			after: function(params) {
+			after: function() {
 				
 			},
 		},
 		
 		item: {
-			before: function(params) {
-				
+			before: function() {
+				if (!Wardrobe.user.isLoggedIn()) {
+					Router.navigate('#/login');
+				} else {
+					var context = this;
+					Wardrobe.json.pull().then(function(result) {
+						context.task.done();
+					});
+				}
 			},
 			
-			view: function(params) {
-				
+			view: function() {
+				console.log('item', this.params);
+				if (this.params.id) {
+					Wardrobe.draw(Templates.pages.itemView());
+				} else {
+					Wardrobe.draw(Templates.pages.itemAdd());
+				}
 			},
 			
-			after: function(params) {
+			after: function() {
 				
 			},
 		},

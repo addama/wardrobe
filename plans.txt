@@ -1,0 +1,38 @@
+Add items
+	All info needed to catalogue the item
+	Grouped by type and then subtype: 
+		top: shirts, tanktops
+		bottom: pants, shorts
+		over: jackets, sweaters
+		under: undershirts, underwear
+		around: rings, necklaces, bracelets
+		shoes: SHOES, sandals
+	Upload 1 picture per item
+View/Edit items
+	Show picture or a silhouette with chosen colors
+Create outfits
+	Create, name, and save outfits by combining items
+	Suggest items that may work based on choices already made
+	Auto-create outfits based on rules
+	
+Page loads
+Check login cookie 
+	if exists
+		if expired
+		then --> #/login
+	then --> #/home
+#/login
+	Validate username/password
+	if valid
+	then {
+		create login cookie
+		--> #/home
+	}
+	if !valid 
+	then notify
+#/home
+	buttons
+#/item
+#/item/:id
+#/outfit
+#/outfit/:id

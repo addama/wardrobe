@@ -36,7 +36,7 @@ var Actual = {
 			var temp = document.cookie.split(/;\s*/);
 			for(var i = 0, l = temp.length; i < l; i++) {
 				var foundName = temp[i].split('=')[0];
-				if (foundName === name) return temp[i].split('=')[1];
+				if (foundName === name) return temp[i];//temp[i].split('=')[1];
 			}
 			return false;
 		},
@@ -310,12 +310,12 @@ var Actual = {
 			} catch (e) {
 				stack = e.stack;
 			}
-			
 			if (!stack) return false;
 			var lines = stack.split("\n");
 			for (var i = 0, l = lines.length; i < l; i++) {
 				// Chrome console
-				if (lines[i].indexOf("at Object.InjectedScript.") >= 0) return true;  
+				//if (lines[i].indexOf("at Object.InjectedScript.") >= 0) return true;  
+				if (lines[i].indexOf("at <anonymous>:") >= 0) return true;  
 				// Firefox console
 				if (lines[i].indexOf("@debugger eval code") == 0) return true; 
 				// Safari console				
@@ -337,36 +337,47 @@ var Actual = {
 			});
 		},
 	
-		ajax: function ajax(url, data, method, goodHandler, badHandler) {
-			// A simple AJAX function 
-			var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest : new ActiveXObject('Microsoft.XMLHTTP');
-			if (!method) method = 'GET';
-			if (method === 'POST') {
-				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-			}
-			
-			if (data instanceof Object) {
-				var query = [];
-				for (var key in data) {
-					query[query.length] = encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-				}
-				data = query.join('&');
-			}
-			
-			xhr.open(method, url + '?' + data, true);
-			if (badHandler) xhr.onerror = badHandler;
-			xhr.onload = function() {
-				if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-					if (goodHandler) {
-						goodHandler(xhr.responseText);
-					} else {
-						return xhr.responseText;
+		ajax: function ajax(url, data, method) {
+			// A simple AJAX function wrapped in a promise
+			if (window.Promise) {
+				var promise = new Promise(function(resolve, reject) {
+					var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest : new ActiveXObject('Microsoft.XMLHTTP');
+					if (!method) method = 'GET';
+					
+					if (data instanceof Object) {
+						var query = [];
+						for (var key in data) {
+							query[query.length] = encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+						}
+						data = query.join('&');
 					}
-				}	
-			}
 
-			xhr.send(null);
-			return xhr;
+					xhr.onload = function() {
+						if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+							resolve(xhr.response);
+						} else {
+							reject(Error(xhr.statusText));
+						}
+					}
+					
+					xhr.onerror = function() {
+						reject('Error talking to ' + url);
+					}
+					
+					if (method === 'POST') {
+						xhr.open(method, url, true);
+						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+						xhr.send(data);
+					} else {
+						xhr.open(method, url + '?' + data, true);
+						xhr.send(null);
+					}
+				});
+				return promise;
+			} else {
+				console.error(Data.messages.noPromises);
+				return false;
+			}
 		},
 		
 		isIE: function isIE() {
