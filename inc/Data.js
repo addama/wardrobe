@@ -1,3 +1,5 @@
+// https://fontawesome.com/icons?d=gallery&c=interfaces&m=free
+// https://getuikit.com/docs/introduction
 var Data = {
 	// Architecture
 	jsonLoc: '../json/',
@@ -27,7 +29,7 @@ var Data = {
 	// Time
 	minute: 1 * 60 * 1000,		// 1 minute
 	day: 24 * 60 * 60 * 1000, 	// 1 day
-	week: 7 * 24 * 60 * 60 * 1000,			// 1 week
+	week: 7 * 24 * 60 * 60 * 1000,	// 1 week
 	
 	// Item Groups and Types
 	topLabel: 'top',
@@ -36,8 +38,13 @@ var Data = {
 	underLabel: 'under',
 	aroundLabel: 'accessory',
 	shoeLabel: 'shoe',
+	hatLabel: 'hat',
+	outfitLabel: 'outfit',
+	addItemLabel: 'add item',
+	addOutfitLabel: 'add outfit',
 	
-	groups: [ 'top', 'bottom', 'over', 'under', 'accessory', 'shoe' ],
+	itemIDSeparator: '_',
+	groups: [ 'top', 'bottom', 'over', 'under', 'around', 'shoe', 'hat' ],
 	types: {
 		top: [ 'tshirt', 'sweater', 'tanktop' ],
 		bottom: [ 'jeans', 'jogger', 'shorts', 'trunks', 'pajama' ],
@@ -45,9 +52,11 @@ var Data = {
 		under: [ 'undershirt', 'wifebeater', 'underwear', 'sock' ],
 		around: [ 'ring', 'necklace', 'bracelet', 'belt', 'tie' ],
 		shoe: [ 'sport', 'boot', 'sandal', 'fashion' ],
+		hat: [ 'snapback', 'strap', 'brimmed' ],
 	},
 	sleeveLengths: [ 'none', 'short', 'middle', 'long' ],
 	materials: [ 'cotton', 'wool', 'denim', 'canvas', 'linen', 'leather', 'suede/nubuck', 'polyester', 'silk', 'nylon', 'velvet', 'satin', 'blend', 'unknown', 'metal' ],	
+	sizes: [ 'xs', 's', 'm', 'l', 'xl', '2xl', '3xl', '4xl' ],
 	
 	colors: {
 		'aliceblue': '#f0f8ff',
@@ -76,7 +85,6 @@ var Data = {
 		'darkgoldenrod': '#b8860b',
 		'darkgray': '#a9a9a9',
 		'darkgreen': '#006400',
-		'darkgrey': '#a9a9a9',
 		'darkkhaki': '#bdb76b',
 		'darkmagenta': '#8b008b',
 		'darkolivegreen': '#556b2f',
@@ -87,13 +95,11 @@ var Data = {
 		'darkseagreen': '#8fbc8f',
 		'darkslateblue': '#483d8b',
 		'darkslategray': '#2f4f4f',
-		'darkslategrey': '#2f4f4f',
 		'darkturquoise': '#00ced1',
 		'darkviolet': '#9400d3',
 		'deeppink': '#ff1493',
 		'deepskyblue': '#00bfff',
 		'dimgray': '#696969',
-		'dimgrey': '#696969',
 		'dodgerblue': '#1e90ff',
 		'firebrick': '#b22222',
 		'floralwhite': '#fffaf0',
@@ -123,13 +129,11 @@ var Data = {
 		'lightgoldenrodyellow': '#fafad2',
 		'lightgray': '#d3d3d3',
 		'lightgreen': '#90ee90',
-		'lightgrey': '#d3d3d3',
 		'lightpink': '#ffb6c1',
 		'lightsalmon': '#ffa07a',
 		'lightseagreen': '#20b2aa',
 		'lightskyblue': '#87cefa',
 		'lightslategray': '#778899',
-		'lightslategrey': '#778899',
 		'lightsteelblue': '#b0c4de',
 		'lightyellow': '#ffffe0',
 		'lime': '#00ff00',
@@ -183,7 +187,6 @@ var Data = {
 		'skyblue': '#87ceeb',
 		'slateblue': '#6a5acd',
 		'slategray': '#708090',
-		'slategrey': '#708090',
 		'snow': '#fffafa',
 		'springgreen': '#00ff7f',
 		'steelblue': '#4682b4',
@@ -223,10 +226,12 @@ var Data = {
 		position: 'bottom-right',
 		timeout: 2000,
 	},
-	
+	defaultTextareaRows: 3,
 	
 	// Database
 	user: false,
 	json: false,
-	
+	db: {
+		groups: {},		// Item groups pulled out from the JSON blob
+	}
 }

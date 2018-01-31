@@ -10,6 +10,24 @@ var Wardrobe = {
 		m.redraw();
 	},
 	
+	changeTypeSelect: function(group) {
+		// onchange handler for the group dropdown, to select
+		var target = document.getElementById('input_type');
+		m.render(target, [
+			Templates.components.option('', ''),
+			Templates.components.options.basic('types', group)
+		]);
+	},
+	
+	changeColorSelect: function(element) {
+		// onchange handler for the color dropdowns, changing the color of the select
+		var selected = element.options[element.selectedIndex];
+		if (selected) {
+			var color = selected.style.backgroundColor || '#fff';
+			element.style.backgroundColor = color;
+		}
+	},
+	
 	json: {
 		pull: function() {
 			// Checks localStorage to see if the data is already there and not expired
@@ -41,18 +59,21 @@ var Wardrobe = {
 			});
 		},
 		
+		process: function() {
+			// Processes the JSON, pulling out subsets we know we'll need
+			
+			// Item groups
+			for (var i = 0, l = Data.groups.length; i < l; i++) {
+				var group = Data.groups[i];
+				Data.db.groups[group] = Wardrobe.item.getByCriterion('group', group);
+			}
+		},
+		
 		newFile: function(username) {
 			return {
 				created: Wardrobe.getTime(),
-				//user: username || '',
-				items: {
-					top: [],
-					bottom: [],
-					over: [],
-					under: [],
-					around: [],
-					shoe: [],
-				},
+				updated: Wardrobe.getTime(),
+				items: [],
 				outfits: [],
 			}
 		},
@@ -62,26 +83,28 @@ var Wardrobe = {
 			// Keys that are true are required, ones that are false are not
 			if (!group || Data.groups.instanceof(group) === -1) return false;
 			var props = {
-				id: true,
-				name: true,
-				group: group,
-				type: true,
-				notes: false,
+				id: true,					// CARHARTT-TOP-TSHIRT-ORANGE-123456789
+				brand: false,				// 'Carhartt'
+				group: group,				// 'top'
+				type: true,					// 'tshirt'
+				name: true,					// 'Chili Heather Carhartt Shirt'
+				notes: false,				// 'Comfortable, bought at Carhartt store'
 				size: {
-					height: false,
-					width: false,
+					general: false,			// 'l'
+					specific: false,			// 'tall'
+					height: false,			// null
+					width: false,			// null
 				},
-				brand: false,
-				created: Wardrobe.getTime(),
-				purchased: false,
-				price: false,
-				requiresUnder: true,
-				formality: false,
-				warmth: false,
+				created: Wardrobe.getTime(),	// 123456789
+				purchased: false,			// 123456789
+				price: false,				// '16.99'
+				requiresUnder: true,			// false
+				formality: false,			// 1
+				warmth: false,				// 1
 				color: {
-					primary: true,
-					secondary: false,
-					accent: false,
+					primary: true,			// 'orange'
+					secondary: false,		// 'gray'
+					accent: false,			// null
 				},
 				
 			}
@@ -129,6 +152,7 @@ var Wardrobe = {
 				validate(username, password).then(function(result) {
 					if (result) {
 						Wardrobe.json.pull().then(function(result) {
+							Wardrobe.json.process();
 							Wardrobe.notify.good(Data.messages.loginCorrect);
 							Router.navigate('#/home');
 						});
@@ -158,7 +182,24 @@ var Wardrobe = {
 	
 	item: {
 		makeItemID: function(object) {
-			
+			// Creates a unique ID for an item
+			// id := $brand_$group_$type_$color_$created
+			return[ object.brand, object.group, object.type, object.color.primary, object.created ].join(Data.itemIDSeparator); 
+		},
+		
+		getByCriterion: function(key, value) {
+			// Combs the JSON to pull out items whose key matches the given value
+			var items = [];
+			for (var i = 0, l = Data.json.items.length; i < l; i++) {
+				var item = Data.json.items[i];
+				if (item[key] === value) items.push(item);
+			}
+			return items;
+		},
+
+		add: function() {
+			var data = Actual.util.getFormData(Data.containerID + 'addItem');
+			console.log(data);
 		},
 	},
 	

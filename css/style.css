@@ -18,3 +18,7 @@ label {
 .fullheight {
 	height: 90vh;
 }
+
+.pointer {
+	cursor: pointer;
+}
