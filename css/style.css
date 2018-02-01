@@ -11,14 +11,19 @@ svg {
 	box-shadow: 0 8px 30px #ededed;
 }
 
-label {
+#loginPanel label {
 	text-align: right;
 }
 
 .fullheight {
-	height: 90vh;
+	height: 100vh;
+	overflow: hidden;
 }
 
 .pointer {
 	cursor: pointer;
+}
+
+#button_addItem {
+	width: 100%;
 }

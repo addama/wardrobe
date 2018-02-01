@@ -1,166 +1,248 @@
 var Templates = {
 	pages: {
 		login: function() {
-			return m('section', {
+			return m('div', {
 				id: Data.containerID + 'login',
-				className: 'uk-flex uk-flex-around'
+				className: 'uk-flex uk-flex-around uk-width-1-2 uk-align-center uk-margin-large-top'
 			}, [
-				m('section', {
+				m('div', {
 					id: 'loginPanel',
-					className: 'uk-padding-large bordered dropshadow uk-flex uk-flex-between'
+					className: 'uk-padding-small bordered dropshadow uk-flex uk-flex-around uk-width-1-1'
 				}, [
 					Templates.components.input({
-						label: 'username',
+						label: label('username'),
 						name: 'username',
 						isUnique: true,
 						value: 'addama',
-						onSubmit: Wardrobe.user.checkLogin
+						onSubmit: App.user.checkLogin
 					}),
 					Templates.components.input({
-						label: 'password',
+						label: label('password'),
 						type: 'password',
 						name: 'password',
 						isUnique: true,
 						value: 'adonai',
-						onSubmit: Wardrobe.user.checkLogin
-					})
-				])
+						onSubmit: App.user.checkLogin
+					}),
+					Templates.components.button({
+						label: label('login'),
+						name: 'login',
+						isUnique: true,
+						onClick: App.user.checkLogin
+					}),
+				]),
 			]);
 		},
 		
 		home: function() {
 			return m('div', {
 				id: Data.containerID + 'home',
-				className: 'uk-flex uk-flex-around uk-flex-stretch uk-height-1-1 uk-container-large uk-align-center fullheight uk-width-1-2'
+				className: 'uk-flex uk-flex-around uk-flex-stretch uk-height-1-1 uk-flex-column uk-width-1-1 uk-align-center'
 			}, [
 				m('ul', {
-					'uk-switcher':'', 
-					className: 'uk-tab uk-flex-center uk-tab-left uk-width-auto'
+					'uk-switcher': 'animation:uk-animation-fade', 
+					className: 'uk-tab uk-flex-center uk-child-width-expand uk-width-1-1 uk-animation-fast'
 				}, [
 					Templates.components.tabs(),
 				]),
 				m('ul', {
-					className: 'uk-switcher uk-margin uk-padding-small uk-width-expand'
+					className: 'uk-switcher uk-margin uk-padding-small uk-width-1-1'
 				}, [
 					Templates.components.galleries(),
-					m('br'),	// Filler
-					m('span', 'outfits'),
-					m('br'),	// Filler
+					Templates.pages.outfits(),
 					Templates.pages.itemAdd(),
-					Templates.pages.outfitAdd()
+					Templates.pages.outfitAdd(),
+					Templates.pages.help(),
 				])
 			]);
 		},
 		
 		itemAdd: function() {
-			/*
-				brand: false,				// 'Carhartt'
-				group: group,				// 'top'
-				type: true,					// 'tshirt'
-				name: true,					// 'Chili Heather Carhartt Shirt'
-				notes: false,				// 'Comfortable, bought at Carhartt store'
-				size: {
-					general: false,			// 'l'
-					specific: false,			// 'tall'
-					height: false,			// null
-					width: false,			// null
-				},
-				price: false,				// '16.99'
-				requiresUnder: true,			// false
-				formality: false,			// 1
-				warmth: false,				// 1
-				color: {
-					primary: true,			// 'orange'
-					secondary: false,		// 'gray'
-					accent: false,			// null
-				},
-			*/
 			return m('div', {
 				id: Data.containerID + 'addItem',
+				className: 'uk-padding-small'
 			}, [
-				m('h1', Data.addItemLabel),
-				Templates.components.input({
-					label: 'Brand',
-					name: 'brand',
-					isUnique: true,
-				}),
-				Templates.components.select({
-					label: 'Group',
-					name: 'group',
-					isUnique: true,
-					blankFirstItem: true,
-					onChange: function() {
-						Wardrobe.changeTypeSelect(this.value);
-					},
-				}, Templates.components.options.basic('groups')),
-				Templates.components.select({
-					label: 'Material',
-					name: 'material',
-					isUnique: true,
-					blankFirstItem: true,
-				}, Templates.components.options.basic('materials')),
-				Templates.components.select({
-					label: 'Size',
-					name: 'size',
-					isUnique: true,
-					blankFirstItem: true,
-				}, Templates.components.options.basic('sizes')),
-				Templates.components.select({
-					label: 'Primary Color',
-					name: 'color1',
-					isUnique: true,
-					blankFirstItem: true,
-					onChange: function(event) {
-						Wardrobe.changeColorSelect(this);
-					},
-				}, Templates.components.options.colors()),
-				Templates.components.select({
-					label: 'Secondary Color',
-					name: 'color2',
-					isUnique: true,
-					blankFirstItem: true,
-					onChange: function(event) {
-						Wardrobe.changeColorSelect(this);
-					},
-				}, Templates.components.options.colors()),
-				Templates.components.select({
-					label: 'Accent Color',
-					name: 'color3',
-					isUnique: true,
-					blankFirstItem: true,
-					onChange: function(event) {
-						Wardrobe.changeColorSelect(this);
-					},
-				}, Templates.components.options.colors()),
-				Templates.components.select({
-					label: 'Type',
-					name: 'type',
-					isUnique: true,
-					blankFirstItem: true,
-				}, []),
-				Templates.components.input({
-					label: 'Name',
-					name: 'name',
-					isUnique: true,
-				}),
+				m('h1', label('addItem')),
+				m('h3', label('required')),
+				m('div', {
+					className: 'uk-column-1-2'
+				}, [
+					Templates.components.select({
+						label: label('group'),
+						name: 'group',
+						isUnique: true,
+						isRequired: true,
+						blankFirstItem: true,
+						onChange: function() {
+							App.changeGroupSelect(this.value);
+						},
+					}, Templates.components.options.basic('groups')),
+					Templates.components.select({
+						label: label('type'),
+						name: 'type',
+						isUnique: true,
+						isRequired: true,
+						blankFirstItem: true,
+						onChange: function() {
+							App.changeTypeSelect(this.value);
+						},
+					}, []),
+				]),
+				m('div', {
+					className: 'uk-column-1-2'	
+				}, [
+					Templates.components.input({
+						label: label('name'),
+						name: 'name',
+						isUnique: true,
+						isRequired: true,
+					}),
+					Templates.components.input({
+						label: 'Brand',
+						name: 'brand',
+						isUnique: true,
+						isRequired: true,
+					}),
+				]),
+				m('div', {
+					className: 'uk-column-1-3'	
+				}, [
+					Templates.components.select({
+						label: label('color1'),
+						name: 'color1',
+						isUnique: true,
+						isRequired: true,
+						blankFirstItem: true,
+						onChange: function(event) {
+							App.changeColorSelect(this);
+						},
+					}, Templates.components.options.colors()),
+					Templates.components.select({
+						label: label('color2'),
+						name: 'color2',
+						isUnique: true,
+						blankFirstItem: true,
+						onChange: function(event) {
+							App.changeColorSelect(this);
+						},
+					}, Templates.components.options.colors()),
+					Templates.components.select({
+						label: label('color3'),
+						name: 'color3',
+						isUnique: true,
+						blankFirstItem: true,
+						onChange: function(event) {
+							App.changeColorSelect(this);
+						},
+					}, Templates.components.options.colors()),
+				]),
+				m('div', {
+					id: Data.containerID + 'sleeveLength',
+					className: 'uk-hidden',
+				}, [
+					Templates.components.select({
+						label: label('sleeveLength'),
+						name: 'sleeveLength',
+						isUnique: true,
+						isDisabled: true,
+					}, Templates.components.options.basic('sleeveLengths', null, Data.defaults.sleeveLength)),
+				]),
+				m('h3', label('optional')),
+				m('div', {
+					className: 'uk-column-1-2'
+				}, [
+					Templates.components.input({
+						label: label('price'),
+						name: 'price',
+						isUnique: true,
+					}),
+					Templates.components.input({
+						type: 'date',
+						label: label('purchased'),
+						name: 'purchased',
+						isUnique: true,
+					}),
+				]),
+				m('div', {
+					className: 'uk-column-1-3'
+				}, [
+					Templates.components.select({
+						label: label('formality'),
+						name: 'formality',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('formalityLevels', null, Data.defaults.formality)),
+					Templates.components.select({
+						label: label('warmth'),
+						name: 'warmth',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('warmthLevels', null, Data.defaults.warmth)),
+					Templates.components.select({
+						label: label('fit'),
+						name: 'fit',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('fitLevels', null, Data.defaults.fit)),
+					Templates.components.select({
+						label: label('material'),
+						name: 'material',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('materials')),
+					Templates.components.select({
+						label: label('pattern'),
+						name: 'pattern',
+						isUnique: true,
+						isRequired: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('patterns', null, Data.defaults.pattern)),
+					Templates.components.select({
+						label: label('wear'),
+						name: 'wear',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('wearLevels', null, Data.defaults.wear)),
+					Templates.components.select({
+						label: label('size'),
+						name: 'size',
+						isUnique: true,
+						blankFirstItem: true,
+					}, Templates.components.options.basic('sizes', null, Data.defaults.size)),
+					Templates.components.input({
+						label: label('width'),
+						name: 'width',
+						isUnique: true,
+					}),
+					Templates.components.input({
+						label: label('height'),
+						name: 'height',
+						isUnique: true,
+					}),
+				]),
+				
 				Templates.components.textarea({
-					label: 'Notes',
+					label: label('notes'),
 					name: 'notes',
 					isUnique: true,
 					placeholder: 'Notes about this item',
 					isUnique: true,
 				}),
 				Templates.components.button({
-					label: 'Add',
+					label: label('addItem'),
 					name: 'addItem',
 					isUnique: true,
-					onClick: Wardrobe.item.add,
+					onClick: App.item.add,
 				}),
 			]);
 		},
 		
 		itemView: function() {
 			return m('div','ItemView');
+		},
+		
+		outfits: function() {
+			return m('span', 'outfits');
 		},
 		
 		outfitAdd: function() {
@@ -170,40 +252,33 @@ var Templates = {
 		outfitView: function() {
 			return m('div','OutfitView');
 		},
+	
+		help: function() {
+			return m('span', 'Help');
+		},
 	},
 	
-	components: {
-		menu: function() {
-			return m('header', {
-				
-			}, [
-				m('nav', {
-					
-				}, [
-					m('ul', {
-						
-					}, [
-						m('li', 'Back'),
-					])
-				])
-			]);
-		},
-		
+	components: {	
 		tabs: function() {
-			function makeTab(label) {
-				return m('li', [ m('a', label) ]);
+			function makeTab(name) { 
+				return m('li', {
+					id: Data.tabID + name
+				}, [ 
+					m('a', label(name)) 
+				]);
 			}
 			
 			var tabs = [];
 			for (var i = 0, l = Data.groups.length; i < l; i++) {
-				var label = Data[Data.groups[i] + 'Label'] || Data.groups[i];
-				tabs.push(makeTab(label));
+				var name = Data.labels[Data.groups[i]] || Data.groups[i];
+				tabs.push(makeTab(name));
 			}
-			tabs.push(m('br'));
-			tabs.push(makeTab(Data.outfitLabel));
-			tabs.push(m('br'));
-			tabs.push(makeTab(Data.addItemLabel));
-			tabs.push(makeTab(Data.addOutfitLabel));
+			tabs.push(
+				makeTab('outfit'),
+				makeTab('addItem'),
+				makeTab('addOutfit'),
+				makeTab('help')
+			);
 			return tabs;
 		},
 		
@@ -216,7 +291,13 @@ var Templates = {
 		},
 		
 		gallery: function(group) {
-			return m('span', group);
+			var group = Data.db.groups[group];
+			var content = Data.messages.noItems;
+			return m('span', content);
+		},
+		
+		card: function(item) {
+			
 		},
 		
 		options: {
@@ -243,14 +324,15 @@ var Templates = {
 				}
 				for (var i = 0, l = source.length; i < l; i++) {
 					var item = source[i];
-					options.push(Templates.components.option(item, item));
+					var select = (item === selected) ? true : false;
+					options.push(Templates.components.option(item, item, select));
 				}
 				return options;
 			},
 		},
 
 		input: function(params) {
-			// params := label, type, value, name, isUnique, isRequired, onSubmit
+			// params := label, type, value, name, isUnique, isRequired, isHidden, isDisabled, onSubmit
 			if (!params.label) params.label = params.type || Data.defaultLabelText;
 			if (!params.type || Data.inputTypes.indexOf(params.type) === -1) params.type = Data.defaultInputType;
 			var random = Actual.string.makeRandom(Data.randomStringLength);
@@ -259,16 +341,18 @@ var Templates = {
 				id: id,
 				name: params.name,
 				type: params.type,
+				className: 'uk-input uk-form-small'
 			}
 			if (params.value) props.value = params.value;
 			if (params.isRequired) props.required = 'required';
+			if (params.isDisabled) props.disabled = 'disabled';
 			if (params.onSubmit && params.onSubmit instanceof Function) props.onkeyup = function(event) {
 				if (event.key === 'Enter') params.onSubmit(event);
 			}
 			return m('div', {
 				// Container div
 				id: Data.containerID + id,
-				className: 'uk-flex uk-flex-around uk-flex-column uk-padding-small',
+				className: 'uk-flex uk-flex-around uk-flex-column uk-padding-small' + ((params.isHidden)?' uk-hidden':''),
 			}, [
 				m('label', {
 					id: Data.labelID + id,
@@ -280,20 +364,21 @@ var Templates = {
 		},
 		
 		select: function(params, items) {
-			// params := label, value, name, isUnique, isRequired, blankFirstItem, onChange
+			// params := label, value, name, isUnique, isRequired, isHidden, blankFirstItem, onChange
 			if (!items || !items instanceof Array) items = [];
 			if (params.blankFirstItem) items.unshift(Templates.components.option('', '', true));
 			var random = Actual.string.makeRandom(Data.randomStringLength);
 			var id = Data.inputID + params.name + ((!params.isUnique) ? random : '');
 			var props = {
-				className: 'uk-select uk-form-small uk-form-width-auto',
+				className: 'pointer uk-select uk-form-small uk-form-width-auto',
 				name: params.name,
 				id: id,
-				required: (params.required)?true:false,
 			}
+			if (params.isRequired) props.required = 'required';
+			if (params.isDisabled) props.disabled = 'disabled';
 			if (params.onChange && params.onChange instanceof Function) props.onchange = params.onChange;
 			return m('div', {
-				className: 'uk-flex uk-flex-around uk-flex-column uk-padding-small'
+				className: 'uk-flex uk-flex-around uk-flex-column uk-padding-small' + ((params.isHidden)?' uk-hidden':'')
 			}, [
 				m('label', {
 					className: 'uk-form-label',
@@ -364,6 +449,7 @@ var Templates = {
 			var props = {
 				id: id,
 				name: params.name,
+				className: 'pointer uk-button uk-button-primary uk-padding-small'
 			}
 			if (params.onClick && params.onClick instanceof Function) props.onclick = params.onClick;
 			return m('button', props, params.label);

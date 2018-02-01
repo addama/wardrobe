@@ -1,4 +1,10 @@
-var Wardrobe = {
+function element(id) { return document.getElementById(id); }
+function label(name) {
+	if (Data.labels[name]) return Actual.string.toTitleCase(Data.labels[name]);
+	return Actual.string.toTitleCase(name);
+}
+
+var App = {
 	getTime: function(asDate) {
 		if (!asDate) asDate = false;
 		return (asDate)?new Date().toJSON():Date.now();
@@ -10,13 +16,53 @@ var Wardrobe = {
 		m.redraw();
 	},
 	
-	changeTypeSelect: function(group) {
+	changeGroupSelect: function(group) {
 		// onchange handler for the group dropdown, to select
-		var target = document.getElementById('input_type');
-		m.render(target, [
-			Templates.components.option('', ''),
-			Templates.components.options.basic('types', group)
-		]);
+		if (group !== '') {
+			m.render(element(Data.inputID + 'type'), [
+				Templates.components.option('', ''),
+				Templates.components.options.basic('types', group)
+			]);
+		}
+		element(Data.inputID + 'type').value = '';
+		// Show sleeveLength for tops
+		if (group === 'top') {
+			App.notify.info('New option: Sleeve Length');
+			element(Data.inputID + 'sleeveLength').disabled = false;
+			element(Data.containerID + 'sleeveLength').classList.remove('uk-hidden');
+		} else {
+			element(Data.inputID + 'sleeveLength').disabled = true;
+			element(Data.containerID + 'sleeveLength').classList.add('uk-hidden');
+		}
+		// Switch size type for bottoms
+		if (group === 'bottom') {
+			element(Data.inputID + 'size').disabled = true;
+			element(Data.inputID + 'width').disabled = false;
+			element(Data.inputID + 'height').disabled = false;
+		} else {
+			element(Data.inputID + 'size').disabled = false;
+			element(Data.inputID + 'width').disabled = true;
+			element(Data.inputID + 'height').disabled = true;
+		}
+		
+		if (group === 'under') {
+			element(Data.inputID + 'material').value = 'cotton';
+		}
+	},
+	
+	changeTypeSelect: function(type) {
+		var checks = Data.typeChecks;
+		if (checks.metal.indexOf(type) !== -1) element(Data.inputID + 'material').value = 'metal';
+		if (checks.cotton.indexOf(type) !== -1) element(Data.inputID + 'material').value = 'cotton';
+		if (checks.silk.indexOf(type) !== -1) element(Data.inputID + 'material').value = 'silk';
+		if (checks.denim.indexOf(type) !== -1) element(Data.inputID + 'material').value = 'denim';
+		if (checks.leather.indexOf(type) !== -1) element(Data.inputID + 'material').value = 'leather';
+		if (checks.noSleeve.indexOf(type) !== -1) element(Data.inputID + 'sleeveLength').value = 'none';
+		if (checks.noLength.indexOf(type) !== -1) {
+			element(Data.inputID + 'height').disabled = true;
+		} else {
+			element(Data.inputID + 'height').disabled = false;
+		}
 	},
 	
 	changeColorSelect: function(element) {
@@ -40,12 +86,14 @@ var Wardrobe = {
 				} catch (error) {
 					// There's no file to pull or an error
 					console.error(Data.messages.needNewJSON);
-					var json = Wardrobe.json.newFile();
+					App.notify.info(Data.messages.needNewJSON);
+					var json = App.json.newFile();
 					return Actual.file.save(Data.jsonLoc + Data.jsonFile, JSON.stringify(json)).then(function(result) {
 						if (result) {
 							Data.json = json;
 						} else {
 							console.error(Data.messages.jsonWriteFail);
+							App.notify.bad(Data.messages.jsonWriteFail);
 						}
 						return Actual.util.wait(Data.waitTime);
 					});
@@ -65,54 +113,52 @@ var Wardrobe = {
 			// Item groups
 			for (var i = 0, l = Data.groups.length; i < l; i++) {
 				var group = Data.groups[i];
-				Data.db.groups[group] = Wardrobe.item.getByCriterion('group', group);
+				Data.db.groups[group] = App.item.getByCriterion('group', group);
 			}
 		},
 		
 		newFile: function(username) {
 			return {
-				created: Wardrobe.getTime(),
-				updated: Wardrobe.getTime(),
+				created: App.getTime(),
+				updated: App.getTime(),
 				items: [],
 				outfits: [],
 			}
 		},
 		
-		newItem: function(group) {
+		newItem: function(params) {
 			// Creates an item object
 			// Keys that are true are required, ones that are false are not
-			if (!group || Data.groups.instanceof(group) === -1) return false;
 			var props = {
-				id: true,					// CARHARTT-TOP-TSHIRT-ORANGE-123456789
+				id: false,					// CARHARTT_TOP_TSHIRT_ORANGE_123456789
 				brand: false,				// 'Carhartt'
-				group: group,				// 'top'
-				type: true,					// 'tshirt'
-				name: true,					// 'Chili Heather Carhartt Shirt'
+				group: false,					// 'top'
+				type: false,					// 'tshirt'
+				name: false,					// 'Chili Heather Carhartt Shirt'
 				notes: false,				// 'Comfortable, bought at Carhartt store'
-				size: {
-					general: false,			// 'l'
-					specific: false,			// 'tall'
-					height: false,			// null
-					width: false,			// null
-				},
-				created: Wardrobe.getTime(),	// 123456789
+				created: App.getTime(),	// 123456789
 				purchased: false,			// 123456789
 				price: false,				// '16.99'
-				requiresUnder: true,			// false
-				formality: false,			// 1
-				warmth: false,				// 1
-				color: {
-					primary: true,			// 'orange'
-					secondary: false,		// 'gray'
-					accent: false,			// null
-				},
-				
+				formality: false,			// 'casual'
+				material: false,				// 'cotton'
+				pattern: false,				// 'heather'
+				warmth: false,				// 'warm'
+				fit: false,					// 'fits well'
+				wear: false,					// 'like-new'
+				size: false,					// 'l'
+				height: false,				// null
+				width: false,				// null
+				sleeveLength: false,			// 'short'
+				color1: false,				// 'orange'
+				color2: false,				// 'gray'
+				color3: false,				// null
+			};
+			if (!params) return props;
+			for (var i = 0, l = Object.keys(props).length; i < l; i++) {
+				var key = Object.keys(props)[i];
+				if (params[key] && params[key].disabled === false) props[key] = params[key].value;
 			}
-			
-			if (group === 'top') {
-				item.size.sleeve = false;
-			}
-			
+			props.id = App.item.makeItemID(props);
 			return props;
 		},
 		
@@ -146,18 +192,18 @@ var Wardrobe = {
 				var username = data['username'].value;
 				var password = data['password'].value;
 				if (!username || !password) {
-					Wardrobe.notify.bad(Data.messages.loginIncomplete);
+					App.notify.bad(Data.messages.loginIncomplete);
 					return false;
 				}
 				validate(username, password).then(function(result) {
 					if (result) {
-						Wardrobe.json.pull().then(function(result) {
-							Wardrobe.json.process();
-							Wardrobe.notify.good(Data.messages.loginCorrect);
+						App.json.pull().then(function(result) {
+							App.json.process();
+							App.notify.good(Data.messages.loginCorrect);
 							Router.navigate('#/home');
 						});
 					} else {
-						Wardrobe.notify.bad(Data.messages.loginIncorrect);	
+						App.notify.bad(Data.messages.loginIncorrect);	
 					}
 				})
 			}
@@ -168,7 +214,7 @@ var Wardrobe = {
 			Actual.storage.remove(Data.cookieName);
 			Actual.storage.remove(Data.localStorageName);
 			Data.json = false;
-			Wardrobe.notify.info(Data.messages.loggedOut);
+			App.notify.info(Data.messages.loggedOut);
 		},
 		
 		isLoggedIn: function() {
@@ -183,8 +229,8 @@ var Wardrobe = {
 	item: {
 		makeItemID: function(object) {
 			// Creates a unique ID for an item
-			// id := $brand_$group_$type_$color_$created
-			return[ object.brand, object.group, object.type, object.color.primary, object.created ].join(Data.itemIDSeparator); 
+			// id := $brand_$group_$type_$color1_$created
+			return[ object.brand, object.group, object.type, object.color1, object.created ].join(Data.itemIDSeparator); 
 		},
 		
 		getByCriterion: function(key, value) {
@@ -198,8 +244,28 @@ var Wardrobe = {
 		},
 
 		add: function() {
+			function validate(form) {
+				var bads = [];
+				for (var i = 0, l = Object.keys(form).length; i < l; i++) {
+					var item = form[Object.keys(form)[i]];
+					if (item.required && !item.disabled && item.value === '') {
+						bads.push(label(item.name));
+					}
+				}
+				return bads;
+			}
+			
 			var data = Actual.util.getFormData(Data.containerID + 'addItem');
-			console.log(data);
+			var validation = validate(data);
+			if (validation.length) {
+				App.notify.bad('The following fields are required: '+ validation.join(', '));
+				return false;
+			}
+			
+			var json = App.json.newItem(data);
+			console.log(json);
+			Data.json.items.push(json);
+			App.notify.info('New item created!');
 		},
 	},
 	
@@ -231,15 +297,15 @@ var Wardrobe = {
 		},
 		
 		good: function notifyGood(text) {
-			this.raw(Data.icons.good + text, 'success');
+			this.raw('<span uk-icon="icon:check"></span>' + text, 'success');
 		},
 		
 		bad: function notifyBad(text) {
-			this.raw(Data.icons.bad + text, 'danger');
+			this.raw('<span uk-icon="icon:warning"></span>' + text, 'danger', null, Data.notifications.timeout * 2);
 		},
 		
 		info: function notifyInfo(text) {
-			this.raw(Data.icons.info + text, 'primary');
+			this.raw('<span uk-icon="icon:info"></span>' + text, 'primary');
 		},
 	},
 	
@@ -247,8 +313,8 @@ var Wardrobe = {
 		login: {
 			before: function() {
 				// Check login status
-				if (Wardrobe.user.isLoggedIn()) {
-					Wardrobe.notify.info(Data.messages.alreadyLoggedIn);
+				if (App.user.isLoggedIn()) {
+					App.notify.info(Data.messages.alreadyLoggedIn);
 					Router.navigate('#/home');
 				}
 				this.task.done();
@@ -256,7 +322,7 @@ var Wardrobe = {
 			
 			view: function() {
 				// Display template
-				Wardrobe.draw(Templates.pages.login());
+				App.draw(Templates.pages.login());
 				this.task.done();
 			},
 			
@@ -267,11 +333,11 @@ var Wardrobe = {
 		
 		outfit: {
 			before: function() {
-				if (!Wardrobe.user.isLoggedIn()) {
+				if (!App.user.isLoggedIn()) {
 					Router.navigate('#/login');
 				} else {
 					var context = this;
-					Wardrobe.json.pull().then(function(result) {
+					App.json.pull().then(function(result) {
 						context.task.done();
 					});
 				}
@@ -281,9 +347,9 @@ var Wardrobe = {
 				// Display template
 				console.log('outfit', this.params);
 				if (this.params.id) {
-					Wardrobe.draw(Templates.pages.outfitView());
+					App.draw(Templates.pages.outfitView());
 				} else {
-					Wardrobe.draw(Templates.pages.outfitAdd());
+					App.draw(Templates.pages.outfitAdd());
 				}
 			},
 			
@@ -294,18 +360,18 @@ var Wardrobe = {
 		
 		home: {
 			before: function() {
-				if (!Wardrobe.user.isLoggedIn()) {
+				if (!App.user.isLoggedIn()) {
 					Router.navigate('#/login');
 				} else {
 					var context = this;
-					Wardrobe.json.pull().then(function(result) {
+					App.json.pull().then(function(result) {
 						context.task.done();
 					});
 				}
 			},
 			
 			view: function() {
-				Wardrobe.draw(Templates.pages.home());
+				App.draw(Templates.pages.home());
 			},
 			
 			after: function() {
@@ -315,11 +381,11 @@ var Wardrobe = {
 		
 		item: {
 			before: function() {
-				if (!Wardrobe.user.isLoggedIn()) {
+				if (!App.user.isLoggedIn()) {
 					Router.navigate('#/login');
 				} else {
 					var context = this;
-					Wardrobe.json.pull().then(function(result) {
+					App.json.pull().then(function(result) {
 						context.task.done();
 					});
 				}
@@ -328,9 +394,9 @@ var Wardrobe = {
 			view: function() {
 				console.log('item', this.params);
 				if (this.params.id) {
-					Wardrobe.draw(Templates.pages.itemView());
+					App.draw(Templates.pages.itemView());
 				} else {
-					Wardrobe.draw(Templates.pages.itemAdd());
+					App.draw(Templates.pages.itemAdd());
 				}
 			},
 			
