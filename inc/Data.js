@@ -1,11 +1,24 @@
-// https://fontawesome.com/icons?d=gallery&c=interfaces&m=free
+// LIBRARIES
 // https://getuikit.com/docs/introduction
+// https://mithril.js.org/
+// ICONS
+// https://thenounproject.com/smashicons/collection/smashicons-man-footwear-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-man-accessories-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-men-clothes-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-the-essentials-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-woman-accessories-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-weather-outline/
+// https://thenounproject.com/smashicons/collection/smashicons-households-2-outline/
+// https://thenounproject.com/ratch0013/collection/jewelry/
+// https://thenounproject.com/luke.locad/collection/mens-clothing-outline/
 var Data = {
 	// Architecture
 	jsonLoc: '../json/',
 	jsonFile: 'wardrobe.json',
 	cookieName: 'wardrobe_login',
 	localStorageName: 'wardrobe_json',
+	imgLoc: './img/svg/',
+	imgFile: '.svg',
 	waitTime: 100,
 	
 	// Errors and messages
@@ -76,11 +89,11 @@ var Data = {
 	},
 	groups: [ 'top', 'bottom', 'over', 'under', 'around', 'shoe', 'hat' ],
 	types: {
-		top: [ 'tshirt', 'sweater', 'tanktop', 'shirt' ],
+		top: [ 'tshirt', 'tanktop', 'polo', 'buttonup' ],
 		bottom: [ 'jeans', 'jogger', 'shorts', 'trunks', 'pajama', 'khaki', 'slacks' ],
-		over: [ 'snow', 'lightweight', 'rain', 'hoodie', 'sweatshirt' ],
+		over: [ 'snow', 'lightweight', 'rain', 'hoodie', 'sweatshirt', 'vest', 'suitjacket', 'blazer', 'sweater', 'cardigan' ],
 		under: [ 'undershirt', 'wifebeater', 'underwear', 'sock' ],
-		around: [ 'ring', 'necklace', 'bracelet', 'belt', 'tie' ],
+		around: [ 'ring', 'necklace', 'bracelet', 'belt', 'tie', 'gloves', 'watch', 'scarf', 'earring', 'sunglasses' ],
 		shoe: [ 'sport', 'boot', 'sandal', 'fashion', 'formal' ],
 		hat: [ 'baseball', 'brimmed', 'beanie' ],
 	},
@@ -273,6 +286,64 @@ var Data = {
 		timeout: 2000,
 	},
 	defaultTextareaRows: 3,
+	icons: {
+		// Generic
+		generic: 'noun_generic',
+		cold: 'noun_cold',
+		warm: 'noun_warm',
+		hot: 'noun_hot',
+		// Top
+		tshirt: 'noun_tshirt',
+		tanktop: 'noun_tanktop',
+		buttonup: 'noun_buttonup',
+		polo: 'noun_polo',
+		// Bottom
+		shorts: 'noun_shorts',
+		trunks: 'noun_trunks',
+		jeans: 'noun_pants',
+		khaki: 'noun_khakis',
+		slacks: 'noun_slacks',
+		jogger: 'noun_jogger',
+		pajama: 'noun_jogger',
+		// Over
+		sweater: 'noun_sweater',
+		cardigan: 'noun_cardigan',
+		hoodie: 'noun_hoodie',
+		snow: 'noun_snow',
+		lightweight: 'noun_lightweight',
+		rain: 'noun_rain',
+		sweatshirt: 'noun_sweatshirt',
+		vest: 'noun_vest',
+		suitjacket: 'noun_jacket',
+		blazer: 'noun_jacket',
+		// Under
+		sock: 'noun_sock',
+		wifebeater: 'noun_wifebeater',
+		undershirt: 'noun_undershirt',
+		underwear: 'noun_underwear',
+		// Around
+		belt: 'noun_belt',
+		bowtie: 'noun_bowtie',
+		gloves: 'noun_gloves',
+		necklace: 'noun_necklace',
+		scarf: 'noun_scarf',
+		sunglasses: 'noun_sunglasses',
+		tie: 'noun_tie',
+		watch: 'noun_watch',
+		ring: 'noun_ring',
+		bracelet: 'noun_bracelet',
+		earring: 'noun_earring',
+		// Shoe
+		fashion: 'noun_fashion',
+		boot: 'noun_boot',
+		formal: 'noun_formal',
+		sport: 'noun_sport',
+		sandal: 'noun_sandal',
+		// Hat
+		beanie: 'noun_beanie',
+		brimmed: 'noun_brimmed',
+		baseball: 'noun_baseball',
+	},
 	
 	// Database
 	user: false,

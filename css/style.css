@@ -49,3 +49,9 @@ svg {
 .colorTray {
 	border-bottom: 1px solid #ddd;
 }
+
+.icon {
+	width: 64px;
+	height: 64px;
+	
+}

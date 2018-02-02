@@ -311,20 +311,14 @@ var Templates = {
 		},
 		
 		card: function(item) {
-			console.log(item);
+			//console.log(item);
 			var random = Actual.string.makeRandom(Data.randomStringLength);
 			var id = Data.containerID + Data.cardID + random;
-			var colors = [
-				Templates.components.colorChip(item.color1)
-			];
-			
+			var colors = [ Templates.components.colorChip(item.color1) ];
 			if (item.color2) colors.push(Templates.components.colorChip(item.color2));			
 			if (item.color3) colors.push(Templates.components.colorChip(item.color3));
-			
-			var props = [
-			
-			];
-			
+			var icon = Data.icons[item.type] || Data.icons.generic;
+
 			return m('div', {
 				id: id,
 				className: 'card pointer dropshadow uk-card-hover uk-width-medium uk-margin-small-top uk-margin-small-bottom uk-inline uk-padding-remove',
@@ -346,6 +340,10 @@ var Templates = {
 						m('span', item.formality),
 						m('span', item.brand),
 					]),
+					m('img', {
+						className: 'icon',
+						src: Data.imgLoc + icon + Data.imgFile
+					}),
 				]),
 				m('div', {
 					className: 'uk-position-bottom-center'
