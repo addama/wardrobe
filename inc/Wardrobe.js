@@ -229,8 +229,8 @@ var App = {
 	item: {
 		makeItemID: function(object) {
 			// Creates a unique ID for an item
-			// id := $brand_$group_$type_$color1_$created
-			return[ object.brand, object.group, object.type, object.color1, object.created ].join(Data.itemIDSeparator); 
+			// id := $brand_$type_$color1_$created
+			return[ object.brand, object.type, object.color1, object.created ].join(Data.itemIDSeparator); 
 		},
 		
 		getByCriterion: function(key, value) {
@@ -265,7 +265,10 @@ var App = {
 			var json = App.json.newItem(data);
 			console.log(json);
 			Data.json.items.push(json);
+			App.json.save();
+			App.json.process();
 			App.notify.info('New item created!');
+			Router.navigate('#/home');
 		},
 	},
 	

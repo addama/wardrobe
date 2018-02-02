@@ -267,6 +267,7 @@ var Data = {
 	buttonID: 'button_',
 	colorID: 'color_',
 	tabID: 'tab_',
+	cardID: 'card_',
 	notifications: {
 		position: 'bottom-right',
 		timeout: 2000,

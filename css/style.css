@@ -3,7 +3,7 @@ svg {
 }
 
 .bordered {
-	border: 1px solid #222;
+	border: 1px solid #ddd;
 	border-radius: 5px;
 }
 
@@ -26,4 +26,26 @@ svg {
 
 #button_addItem {
 	width: 100%;
+}
+
+.colorChip {
+	height: 1em;
+}
+
+.subtitle {
+	font-size: smaller;
+	color: #ddd;
+}
+
+#container_tabs {
+	z-index: 100;
+	background-color: #fff;
+}
+
+.card {
+	height: 7em;
+}
+
+.colorTray {
+	border-bottom: 1px solid #ddd;
 }

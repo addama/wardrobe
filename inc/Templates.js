@@ -40,13 +40,15 @@ var Templates = {
 				className: 'uk-flex uk-flex-around uk-flex-stretch uk-height-1-1 uk-flex-column uk-width-1-1 uk-align-center'
 			}, [
 				m('ul', {
+					id: Data.containerID + 'tabs',
 					'uk-switcher': 'animation:uk-animation-fade', 
-					className: 'uk-tab uk-flex-center uk-child-width-expand uk-width-1-1 uk-animation-fast'
+					className: 'uk-tab uk-flex-center uk-child-width-expand uk-width-1-1 uk-animation-fast',
+					'uk-sticky': 'show-on-up:true',
 				}, [
 					Templates.components.tabs(),
 				]),
 				m('ul', {
-					className: 'uk-switcher uk-margin uk-padding-small uk-width-1-1'
+					className: 'uk-switcher uk-margin uk-width-1-1 uk-align-center uk-padding-large uk-padding-small-top'
 				}, [
 					Templates.components.galleries(),
 					Templates.pages.outfits(),
@@ -291,13 +293,74 @@ var Templates = {
 		},
 		
 		gallery: function(group) {
-			var group = Data.db.groups[group];
-			var content = Data.messages.noItems;
-			return m('span', content);
+			var json = Data.db.groups[group];
+			var cards = [];
+			
+			if (json.length) {
+				for (var i = 0, l = json.length; i < l; i++) {
+					cards.push(Templates.components.card(json[i]));
+				}
+			} else {
+				cards.push(Data.messages.noItems);
+			}
+			
+			return m('div', {
+				id: Data.containerID + group + '_gallery',
+				className: 'uk-flex uk-flex-around uk-flex-wrap uk-flex-top uk-flex-wrap-between uk-grid-small uk-flex-top'
+			}, cards);
 		},
 		
 		card: function(item) {
+			console.log(item);
+			var random = Actual.string.makeRandom(Data.randomStringLength);
+			var id = Data.containerID + Data.cardID + random;
+			var colors = [
+				Templates.components.colorChip(item.color1)
+			];
 			
+			if (item.color2) colors.push(Templates.components.colorChip(item.color2));			
+			if (item.color3) colors.push(Templates.components.colorChip(item.color3));
+			
+			var props = [
+			
+			];
+			
+			return m('div', {
+				id: id,
+				className: 'card pointer dropshadow uk-card-hover uk-width-medium uk-margin-small-top uk-margin-small-bottom uk-inline uk-padding-remove',
+				onclick: function() {
+					Router.navigate('#/item/'+item.id);
+				},
+			}, [
+				m('div', {
+					className: 'uk-flex uk-flex-center uk-margin-remove uk-width-1-1 colorTray'
+				}, colors),
+				m('div', {
+					className: 'uk-position-small uk-position-cover'
+				}, [
+					m('div', item.name),
+					m('div', {
+						className: 'subtitle uk-flex uk-flex-between'
+					}, [
+						m('span', item.material),
+						m('span', item.formality),
+						m('span', item.brand),
+					]),
+				]),
+				m('div', {
+					className: 'uk-position-bottom-center'
+				}, [
+				m('span.uk-label', item.type),
+				]),
+			]);
+		},
+		
+		colorChip: function(color) {
+			return m('div', {
+				className: 'colorChip uk-padding-small uk-padding-remove-top uk-padding-remove-bottom uk-width-expand',
+				style: 'background-color:'+color,
+				title: color
+			});
 		},
 		
 		options: {
