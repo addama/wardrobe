@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Men's outfit and wardrobe management application",
   "main": "./src/app.js",
+  "repository": "https://github.com/addama/wardrobe.git",
   "scripts": {
     "start": "webpack-dev-server",
     "webpack": "webpack",
@@ -12,7 +13,7 @@
     "sprite": "svg-sprite-generate -d src/img/svg -o dist/img/icons.svg",
     "build-long": "npm run scss && npm run autoprefixer && npm run icons && npm run sprite && npm run webpack",
     "build-short": "npm run scss && npm run webpack",
-    "prestart": "npm run build-short"
+    "prestart": "npm run build-long"
   },
   "author": "Addama Sanders",
   "license": "ISC",
