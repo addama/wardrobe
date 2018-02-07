@@ -1,0 +1,78 @@
+{
+	"jsonLoc": "../json/",
+	"jsonFile": "wardrobe.json",
+	"cookieName": "wardrobe_login",
+	"localStorageName": "wardrobe_json",
+	"imgLoc": "./img/svg/",
+	"imgFile": ".svg",
+	"waitTime": 100,
+
+	"minute": 1 * 60 * 1000,
+	"day": 24 * 60 * 60 * 1000,
+	"week": 7 * 24 * 60 * 60 * 1000,
+
+	"defaults": {
+		"formality": "casual",
+		"pattern": "none",
+		"sleeveLength": "short",
+		"wear": "like-new",
+		"fit": "fits well",
+		"warmth": "warm",
+		"color": "black",
+		
+	},
+	"groups": [ "top", "bottom", "over", "under", "around", "shoe", "hat" ],
+	"types": {
+		"top": [ "tshirt", "tanktop", "polo", "buttonup" ],
+		"bottom": [ "jeans", "jogger", "shorts", "trunks", "pajama", "khaki", "slacks" ],
+		"over": [ "snow", "lightweight", "rain", "hoodie", "sweatshirt", "vest", "suitjacket", "blazer", "sweater", "cardigan" ],
+		"under": [ "undershirt", "wifebeater", "underwear", "sock" ],
+		"around": [ "ring", "necklace", "bracelet", "belt", "tie", "gloves", "watch", "scarf", "earring", "sunglasses" ],
+		"shoe": [ "sport", "boot", "sandal", "fashion", "formal" ],
+		"hat": [ "baseball", "brimmed", "beanie" ],
+	},
+	"sleeveLengths": [ "none", "short", "middle", "long" ],
+	"materials": [ "cotton", "wool", "denim", "canvas", "linen", "leather", "suede/nubuck", "polyester", "silk", "nylon", "velvet", "satin", "blend", "unknown", "metal", "fur", "blend", "plastic", "rubber" ],	
+	"sizes": [ "xs", "s", "m", "l", "xl", "2xl", "3xl", "4xl" ],
+	"warmthLevels": [ "cold", "warm", "hot" ],
+	"formalityLevels": [ "sport", "casual", "business casual", "business formal", "semi-formal", "formal", "black tie", "white tie" ],
+	"fitLevels": [ "too small", "small", "fits well", "big", "too big" ],
+	"wearLevels": [ "destroyed", "ratty", "worn", "like-new", "pristine", "never worn" ],
+	"patterns": [ "heather", "houndstooth", "plaid", "stripe", "dots", "graphic", "none", "paisley", "geometric", "basketweave", "checked", "floral", "chevron", "gingham", "harlequin", "herringbone", "animal print", "toile" ],
+	"typeChecks": {
+		"metal": [ "ring", "necklace", "bracelet" ],
+		"cotton": [ "tshirt", "wifebeater", "tank top", "hoodie", "sweatshirt", "underwear", "socks" ],
+		"silk": [ "tie" ],
+		"denim": [ "jeans" ],
+		"leather": [ "belt", "formal" ],
+		"noSleeve": [ "tanktop", "wifebeater" ],
+		"noLength": [ "shorts", "trunks" ],
+	},
+
+	
+	"defaultColor": "#000000",
+	"defaultInputType": "text",
+	"defaultButtonType": "button",
+	"defaultLabelText": "Input",
+	"defaultButtonText": "Go",
+	"inputTypes": [
+		"text", "date", "email", "number", "range", "color", "checkbox", "radio", 
+		"search", "tel", "password", "hidden", "time",
+	],
+	"buttonTypes": [
+		"button", "submit", "reset"
+	],
+	"randomStringLength": 8,
+	"inputID": "input_",
+	"containerID": "container_",
+	"labelID": "label_",
+	"buttonID": "button_",
+	"colorID": "color_",
+	"tabID": "tab_",
+	"cardID": "card_",
+	"notifications": {
+		"position": "bottom-right",
+		"timeout": 2000,
+	},
+	"defaultTextareaRows": 3
+}

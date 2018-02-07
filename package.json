@@ -1,0 +1,38 @@
+{
+  "name": "wardrobe",
+  "version": "1.0.0",
+  "description": "Men's outfit and wardrobe management application",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "webpack": "webpack",
+    "scss": "node-sass --output-style compressed -o dist/css src/scss",
+    "autoprefixer": "postcss -u autoprefixer -r dist/css/*",
+    "icons": "svgo -f src/img/svg",
+    "sprite": "svg-sprite-generate -d src/img/svg -o dist/img/icons.svg",
+    "build-long": "npm run scss && npm run autoprefixer && npm run icons && npm run sprite && npm run webpack",
+    "build-short": "npm run scss && npm run webpack",
+    "prestart": "npm run build-short"
+  },
+  "author": "Addama Sanders",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^7.2.5",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "node-sass": "^4.7.2",
+    "postcss-cli": "^4.1.1",
+    "react-router-dom": "^4.2.2",
+    "svg-sprite-generator": "0.0.7",
+    "svgo": "^1.0.4",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "uikit": "^3.0.0-beta.39"
+  }
+}

@@ -1,0 +1,57 @@
+{
+	"generic": "noun_generic",
+	"cold": "noun_cold",
+	"warm": "noun_warm",
+	"hot": "noun_hot",
+
+	"tshirt": "noun_tshirt",
+	"tanktop": "noun_tanktop",
+	"buttonup": "noun_buttonup",
+	"polo": "noun_polo",
+
+	"shorts": "noun_shorts",
+	"trunks": "noun_trunks",
+	"jeans": "noun_pants",
+	"khaki": "noun_khakis",
+	"slacks": "noun_slacks",
+	"jogger": "noun_jogger",
+	"pajama": "noun_jogger",
+
+	"sweater": "noun_sweater",
+	"cardigan": "noun_cardigan",
+	"hoodie": "noun_hoodie",
+	"snow": "noun_snow",
+	"lightweight": "noun_lightweight",
+	"rain": "noun_rain",
+	"sweatshirt": "noun_sweatshirt",
+	"vest": "noun_vest",
+	"suitjacket": "noun_jacket",
+	"blazer": "noun_jacket",
+
+	"sock": "noun_sock",
+	"wifebeater": "noun_wifebeater",
+	"undershirt": "noun_undershirt",
+	"underwear": "noun_underwear",
+
+	"belt": "noun_belt",
+	"bowtie": "noun_bowtie",
+	"gloves": "noun_gloves",
+	"necklace": "noun_necklace",
+	"scarf": "noun_scarf",
+	"sunglasses": "noun_sunglasses",
+	"tie": "noun_tie",
+	"watch": "noun_watch",
+	"ring": "noun_ring",
+	"bracelet": "noun_bracelet",
+	"earring": "noun_earring",
+
+	"fashion": "noun_fashion",
+	"boot": "noun_boot",
+	"formal": "noun_formal",
+	"sport": "noun_sport",
+	"sandal": "noun_sandal",
+
+	"beanie": "noun_beanie",
+	"brimmed": "noun_brimmed",
+	"baseball": "noun_baseball"
+}
