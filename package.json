@@ -25,7 +25,6 @@
     "babel-preset-react": "^6.24.1",
     "node-sass": "^4.7.2",
     "postcss-cli": "^4.1.1",
-    "react-router-dom": "^4.2.2",
     "svg-sprite-generator": "0.0.7",
     "svgo": "^1.0.4",
     "webpack": "^3.10.0",
@@ -34,6 +33,9 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
     "uikit": "^3.0.0-beta.39"
   }
 }

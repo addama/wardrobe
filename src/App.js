@@ -9,6 +9,10 @@
 // https://thenounproject.com/ratch0013/collection/jewelry/
 // https://thenounproject.com/luke.locad/collection/mens-clothing-outline/
 
+// https://sass-lang.com/documentation/file.SASS_REFERENCE.html
+/*
+	Containers subscribe to the redux store and pass data to presentational components as props
+*/
 import UIkit from 'uikit';
 import React from 'react';
 import { render } from 'react-dom';

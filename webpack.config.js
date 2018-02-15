@@ -34,7 +34,7 @@ module.exports = {
 		historyApiFallback: {
 			rewrites: [
 				// This makes it so going directly to a route actually works
-				{ from: /./, to: '/dist/index.html'},
+				{ from: /./, to: '/dist/index.html' },
 			]
 		}
 	}
