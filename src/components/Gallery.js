@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 
 class Gallery extends React.Component {
 	render() {
-		console.log('hello', this.props);
 		let type = this.props.match.path;
+		console.log(type);
 		return (
 			<section>
-				<h1>Gallery page</h1>
+				<h1>Gallery page: {type}</h1>
 				<Link to={{ pathname: '/item/hello' }}>Item</Link>
 			</section>
 		);

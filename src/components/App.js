@@ -10,35 +10,53 @@
 // https://thenounproject.com/luke.locad/collection/mens-clothing-outline/
 
 // https://sass-lang.com/documentation/file.SASS_REFERENCE.html
-/*
-	Containers subscribe to the redux store and pass data to presentational components as props
-*/
+
 import UIkit from 'uikit';
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import Home from './components/Home';
-import Gallery from './components/Gallery';
-import ItemAdd from './components/ItemAdd';
-import ItemView from './components/ItemView';
-
+import Home from './Home';
+import Gallery from './Gallery';
+import ItemAdd from './ItemAdd';
+import ItemView from './ItemView';
+import { createStore, combineReducers } from 'redux';
+	
 const supportsHistory = 'pushState' in window.history;
-
 class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			json: '',
+			isLoading: false
+		}
+	}
+	
+	componentDidMount() {
+
+	}
+	
 	render() {
-		return (<BrowserRouter basename='/dist' forceRefresh={!supportsHistory}>
+		const { json, isLoading } = this.state;
+		return (
+		<BrowserRouter basename='/dist' forceRefresh={!supportsHistory}>
 			<Route render={({ location}) => (
 				<Switch location={location} key={location.key}>
 					<Route exact path='/' component={Home} />
 					<Route exact path='/top' component={Gallery} />
 					<Route exact path='/bottom' component={Gallery} />
+					<Route exact path='/over' component={Gallery} />
+					<Route exact path='/under' component={Gallery} />
+					<Route exact path='/around' component={Gallery} />
+					<Route exact path='/shoe' component={Gallery} />
+					<Route exact path='/hat' component={Gallery} />
 					<Route exact path='/item' component={ItemAdd} />	
 					<Route path='/item/:id' component={ItemView} />	
 					<Redirect to='/' />
 				</Switch>
 			)} />
-		</BrowserRouter>);
+		</BrowserRouter>
+		);
 	}
 }
 
-render(<App />, document.getElementById('root'));
+export default App;

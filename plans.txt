@@ -1,0 +1,96 @@
+Distributable File Structure
+/
+	php/
+		compile.php
+		file.php
+	img/
+		icons.svg*
+	css/
+		style.css*
+	json/
+		index.json
+		items/
+			*.item
+		outfits/
+			*.outfit
+	index.html
+	bundle.js*
+
+Source File Structure
+/
+	img/
+		svg/
+			*.svg
+	components/
+	redux/
+	scss/
+	index.js
+
+Build Capabilities	
+* Icon sprite sheet is built from src/img/svg/*.svg into dist/img/icons.svg
+* CSS is built by SASS from src/scss/*.sass into dist/css/style.css
+* All JS is built by webpack from src/index.js into dist/bundle.js
+* dist/json/index.json is a compiled by dist/php/compile.php from ./items/*.item and ./outfits/*.outfit
+
+compile.php Process
+* Check if dist/json/index.json exists, create if not
+* Check if dist/json/items/* exists, aggregate if found
+* Check if dist/json/outfits/* exists, aggregate if found
+* Create indexed object of items and outfits if any
+* Return index as JSON
+
+Routes
+ROUTE					AUTH?	DESC
+* /						N		Index page
+* /login				N		Login page
+* /home					N		Explicit alias to /
+* /items				N		Show all items
+* /items/new			Y		Add new item
+* /items/view			N		Redirect to /items
+* /items/edit			N		Redirect to /items
+* /items/view/:id		N		View item :id
+* /items/edit/:id		Y		Edit item :id
+* /groups				N		View groups (passthrough to /group/:id)
+* /groups/:id			N		View items of group :id
+* /outfits				N		View all outfits
+* /outfits/new			Y		Add new outfit
+* /outfits/view			N		Redirect to /outfits
+* /outfits/edit			N		Redirect to /outfits
+* /outfits/view/:id		N		View outfit :id
+* /outfits/edit/:id		Y		Edit outfit :id
+
+Common JSON
+{
+	"id": "",
+	"created": "",
+	"updated": ""
+}
+
+Item JSON
+{
+	(Common JSON)
+	"props": {
+		(Item Props JSON)
+	}
+}
+
+Outfit JSON
+{
+	(Common JSON)
+	"props": {
+		(Outfit Props JSON)
+	},
+	"items": [
+		(Array of Item IDs)
+	]
+}
+
+Item Props JSON
+{
+	"group": "",
+	"type": "",
+	
+	"name": "",
+	"desc": "",
+	
+}
